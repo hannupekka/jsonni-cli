@@ -1,6 +1,4 @@
-#!/usr/bin/env node
 import stringifyObject from 'stringify-object';
-import convertToObject from 'convert-to-object';
 import safeEval from 'safe-eval';
 import getStdin from 'get-stdin';
 import commander from 'commander';
@@ -29,19 +27,6 @@ const isJSON = (input: string): boolean => {
     return false;
   }
 };
-
-// /**
-//  * Parses input and returns it as string.
-//  * @param {string} input Input
-//  * @returns {string}
-//  */
-// const parseInput = (input: string): string => {
-//   const isInputJSON: boolean = isJSON(input);
-
-//   return isInputJSON
-//     ? JSON.stringify(JSON.parse(input))
-//     : stringifyObject(convertToObject(input), { singleQuotes: false });
-// };
 
 /**
  * Get query value and context
@@ -130,7 +115,6 @@ const evaluateQuery = (input: string, query: Query) => {
 
   // Read input from stdin.
   const input = await getStdin();
-  // const parsed = parseInput(input);
 
   const queryContext = parseQueryValueAndContext(input, query);
   const evaluated = evaluateQuery(input, queryContext);

@@ -2,7 +2,7 @@ import util from 'util';
 import { exec } from 'child_process';
 
 const execAsync = util.promisify(exec);
-const binaryPath = './bin/index.js';
+const binaryPath = 'node ./bin/index.js';
 
 const getStdout = async (
   filename: string,
