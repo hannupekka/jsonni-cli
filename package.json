@@ -8,7 +8,7 @@
     "dev": "tsc -w",
     "lint": "eslint src/**/*.ts",
     "test": "npm run build && jest",
-    "publish": "npm test && npm publish"
+    "prepublish": "npm test"
   },
   "repository": {
     "type": "git",
