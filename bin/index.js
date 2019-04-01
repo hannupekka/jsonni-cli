@@ -48,7 +48,7 @@ var consola_1 = __importDefault(require("consola"));
 var lodash_1 = __importDefault(require("lodash"));
 var fromfrom_1 = require("fromfrom");
 var jsonminify_1 = __importDefault(require("jsonminify"));
-var packageInfo = require("../package.json");
+var packageInfo = require('../package.json');
 /**
  * Checks if given string is JSON.
  * @param {string} input Input to check.
@@ -81,27 +81,27 @@ var isJSON = function (input) {
  * @returns {object|null}
  */
 var parseQueryValueAndContext = function (input, query) {
-    var queryValue = lodash_1.default.trimEnd(query, ";");
+    var queryValue = lodash_1.default.trimEnd(query, ';');
     // ES6
-    if (queryValue.startsWith("$input.")) {
+    if (queryValue.startsWith('$input.')) {
         return {
-            queryValue: queryValue.replace("$input.", input + "."),
+            queryValue: queryValue.replace('$input.', input + "."),
             context: null
         };
     }
     // Lodash
-    if (queryValue.startsWith("_.")) {
-        var isChained = queryValue.startsWith("_.chain(");
-        var queryValueSuffix = isChained ? ".value()" : "";
+    if (queryValue.startsWith('_.')) {
+        var isChained = queryValue.startsWith('_.chain(');
+        var queryValueSuffix = isChained ? '.value()' : '';
         return {
-            queryValue: queryValue.replace("$input", "" + input) + queryValueSuffix,
+            queryValue: queryValue.replace('$input', "" + input) + queryValueSuffix,
             context: lodash_1.default
         };
     }
     // fromfrom
-    if (queryValue.startsWith("from")) {
+    if (queryValue.startsWith('from')) {
         return {
-            queryValue: queryValue.replace("$input", input),
+            queryValue: queryValue.replace('$input', input),
             context: { from: fromfrom_1.from }
         };
     }
@@ -134,15 +134,15 @@ var evaluateQuery = function (input, query) {
         switch (_a.label) {
             case 0:
                 program = commander_1.default
-                    .version(packageInfo.version, "-v, --version")
-                    .option("-m --minify", "Minify output")
-                    .option("-q --query <query>", "Query to transorm data with")
+                    .version(packageInfo.version, '-v, --version')
+                    .option('-m --minify', 'Minify output')
+                    .option('-q --query <query>', 'Query to transorm data with')
                     .parse(process.argv);
-                program.on("--help", function () {
-                    console.log("");
-                    console.log("Examples:");
+                program.on('--help', function () {
+                    console.log('');
+                    console.log('Examples:');
                     console.log("  $ cat data.json | jsonni -q '$input.map(i => i.name)'");
-                    console.log("");
+                    console.log('');
                 });
                 query = program.query;
                 shouldMinify = program.minify;

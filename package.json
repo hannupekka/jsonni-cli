@@ -7,7 +7,7 @@
     "build": "tsc --outDir bin",
     "dev": "tsc -w --outDir bin",
     "lint": "eslint src/**/*.ts",
-    "test": "jest --verbose"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -62,7 +62,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "npm run build && npm test && lint-staged"
     }
   },
   "lint-staged": {
@@ -71,6 +71,5 @@
       "prettier --write",
       "git add"
     ]
-  },
-  "dependencies": {}
+  }
 }
