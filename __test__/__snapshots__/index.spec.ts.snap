@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`JSONNI help should be printed with --help 1`] = `
+Object {
+  "stderr": "",
+  "stdout": "Usage: index [options]
+
+Options:
+  -v, --version       output the version number
+  -m --minify         Minify output
+  -q --query <query>  Query to transorm data with
+  -h, --help          output usage information
+",
+}
+`;
+
+exports[`JSONNI help should be printed with -h 1`] = `
+Object {
+  "stderr": "",
+  "stdout": "Usage: index [options]
+
+Options:
+  -v, --version       output the version number
+  -m --minify         Minify output
+  -q --query <query>  Query to transorm data with
+  -h, --help          output usage information
+",
+}
+`;
+
+exports[`JSONNI help should be printed without params 1`] = `
+Object {
+  "stderr": "",
+  "stdout": "Usage: index [options]
+
+Options:
+  -v, --version       output the version number
+  -m --minify         Minify output
+  -q --query <query>  Query to transorm data with
+  -h, --help          output usage information
+
+Examples:
+  $ cat data.json | jsonni -q '$input.map(i => i.name)'
+
+",
+}
+`;
+
+exports[`JSONNI minify should minify output with --minify 1`] = `
+"{\\"name\\":\\"Meadows Parker\\",\\"age\\":30}
+"
+`;
+
+exports[`JSONNI minify should minify output with -m 1`] = `
+"{\\"name\\":\\"Meadows Parker\\",\\"age\\":30}
+"
+`;
+
+exports[`JSONNI version should be printed with --version 1`] = `
+Object {
+  "stderr": "",
+  "stdout": "1.0.0
+",
+}
+`;
+
+exports[`JSONNI version should be printed with -v 1`] = `
+Object {
+  "stderr": "",
+  "stdout": "1.0.0
+",
+}
+`;

@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc --outDir bin",
     "dev": "tsc -w --outDir bin",
-    "lint": "eslint src/**/*.ts"
+    "lint": "eslint src/**/*.ts",
+    "test": "jest --verbose"
   },
   "repository": {
     "type": "git",
@@ -28,12 +29,17 @@
   },
   "homepage": "https://github.com/hannupekka/jsonni-cli#readme",
   "devDependencies": {
+    "@babel/core": "^7.4.0",
+    "@babel/preset-env": "^7.4.2",
+    "@babel/preset-typescript": "^7.3.3",
     "@types/get-stdin": "^5.0.1",
+    "@types/jest": "^24.0.11",
     "@types/jsonminify": "^0.4.0",
     "@types/lodash": "^4.14.123",
     "@types/stringify-object": "^3.2.0",
     "@typescript-eslint/eslint-plugin": "^1.5.0",
     "@typescript-eslint/parser": "^1.5.0",
+    "babel-jest": "^24.5.0",
     "commander": "^2.19.0",
     "consola": "^2.5.8",
     "convert-to-object": "0.0.4",
@@ -42,6 +48,7 @@
     "get-stdin": "^6.0.0",
     "husky": "^1.3.1",
     "insomnia-prettify": "^0.1.8",
+    "jest": "^24.5.0",
     "jsonminify": "^0.4.1",
     "lint-staged": "^8.1.5",
     "lodash": "^4.17.11",

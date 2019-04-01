@@ -1,15 +1,15 @@
 #!/usr/bin/env node
-import stringifyObject from "stringify-object";
-import convertToObject from "convert-to-object";
-import safeEval from "safe-eval";
-import getStdin from "get-stdin";
-import commander from "commander";
-import consola from "consola";
-import _ from "lodash";
-import { from } from "fromfrom";
-import jsonMinify from "jsonminify";
+import stringifyObject from 'stringify-object';
+import convertToObject from 'convert-to-object';
+import safeEval from 'safe-eval';
+import getStdin from 'get-stdin';
+import commander from 'commander';
+import consola from 'consola';
+import _ from 'lodash';
+import { from } from 'fromfrom';
+import jsonMinify from 'jsonminify';
 
-const packageInfo = require("../package.json");
+const packageInfo = require('../package.json');
 
 interface Query {
   queryValue: string;
@@ -50,30 +50,30 @@ const isJSON = (input: string): boolean => {
  * @returns {object|null}
  */
 const parseQueryValueAndContext = (input: string, query: string): Query => {
-  const queryValue = _.trimEnd(query, ";");
+  const queryValue = _.trimEnd(query, ';');
 
   // ES6
-  if (queryValue.startsWith("$input.")) {
+  if (queryValue.startsWith('$input.')) {
     return {
-      queryValue: queryValue.replace("$input.", `${input}.`),
+      queryValue: queryValue.replace('$input.', `${input}.`),
       context: null
     };
   }
 
   // Lodash
-  if (queryValue.startsWith("_.")) {
-    const isChained = queryValue.startsWith("_.chain(");
-    const queryValueSuffix = isChained ? ".value()" : "";
+  if (queryValue.startsWith('_.')) {
+    const isChained = queryValue.startsWith('_.chain(');
+    const queryValueSuffix = isChained ? '.value()' : '';
     return {
-      queryValue: queryValue.replace("$input", `${input}`) + queryValueSuffix,
+      queryValue: queryValue.replace('$input', `${input}`) + queryValueSuffix,
       context: _
     };
   }
 
   // fromfrom
-  if (queryValue.startsWith("from")) {
+  if (queryValue.startsWith('from')) {
     return {
-      queryValue: queryValue.replace("$input", input),
+      queryValue: queryValue.replace('$input', input),
       context: { from }
     };
   }
@@ -107,16 +107,16 @@ const evaluateQuery = (input: string, query: Query) => {
 (async () => {
   // Handle arguments.
   const program = commander
-    .version(packageInfo.version, "-v, --version")
-    .option("-m --minify", "Minify output")
-    .option("-q --query <query>", "Query to transorm data with")
+    .version(packageInfo.version, '-v, --version')
+    .option('-m --minify', 'Minify output')
+    .option('-q --query <query>', 'Query to transorm data with')
     .parse(process.argv);
 
-  program.on("--help", () => {
-    console.log("");
-    console.log("Examples:");
+  program.on('--help', () => {
+    console.log('');
+    console.log('Examples:');
     console.log("  $ cat data.json | jsonni -q '$input.map(i => i.name)'");
-    console.log("");
+    console.log('');
   });
 
   // Get query string to be executed against input.

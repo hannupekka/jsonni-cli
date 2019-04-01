@@ -1,9 +1,11 @@
 module.exports = {
-  parser: "@typescript-eslint/parser",
-  extends: ["plugin:@typescript-eslint/recommended"],
+  parser: '@typescript-eslint/parser',
+  extends: ['plugin:@typescript-eslint/recommended'],
   parserOptions: {
     ecmaVersion: 2018,
-    sourceType: "module"
+    sourceType: 'module'
   },
-  rules: {}
+  rules: {
+    '@typescript-eslint/indent': ['error', 2]
+  }
 };
