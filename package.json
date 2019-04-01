@@ -1,13 +1,14 @@
 {
   "name": "jsonni-cli",
   "version": "1.0.0",
-  "description": "Manipulate data with ES6, Lodash or fromfrom.",
-  "main": "index.js",
+  "description": "Manipulate data with ES6, Lodash or fromfrom, from your command line",
+  "main": "./bin/index.js",
   "scripts": {
     "build": "tsc && chmod a+x bin/index.js",
     "dev": "tsc -w",
     "lint": "eslint src/**/*.ts",
-    "test": "npm run build && jest"
+    "test": "npm run build && jest",
+    "publish": "npm test && npm publish"
   },
   "repository": {
     "type": "git",
