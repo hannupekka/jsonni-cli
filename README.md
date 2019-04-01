@@ -6,6 +6,10 @@ Manipulate data with ES6, [Lodash](https://lodash.com/) or [fromfrom](https://gi
 
 Command line version of [JSONNI](https://github.com/hannupekka/jsonni)
 
+## Install
+
+`npm install -g jsonni-cli`
+
 ## Usage
 
 ### ES6
