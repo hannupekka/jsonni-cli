@@ -4,8 +4,8 @@
   "description": "Manipulate data with ES6, Lodash or fromfrom.",
   "main": "index.js",
   "scripts": {
-    "build": "tsc --outDir bin",
-    "dev": "tsc -w --outDir bin",
+    "build": "tsc && chmod a+x bin/index.js",
+    "dev": "tsc -w",
     "lint": "eslint src/**/*.ts",
     "test": "jest"
   },
