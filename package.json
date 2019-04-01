@@ -7,7 +7,7 @@
     "build": "tsc && chmod a+x bin/index.js",
     "dev": "tsc -w",
     "lint": "eslint src/**/*.ts",
-    "test": "jest"
+    "test": "npm run build && jest"
   },
   "repository": {
     "type": "git",
@@ -62,7 +62,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run build && npm test && lint-staged"
+      "pre-commit": "npm test && lint-staged"
     }
   },
   "lint-staged": {
