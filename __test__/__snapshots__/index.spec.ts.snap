@@ -9,6 +9,7 @@ Options:
   -v, --version            output the version number
   --csv                    use CSV as input data
   --delimiter <delimiter>  CSV delimiter character, defaults to \\";\\"
+  --tsv                    use TSV as input data
   --headers <headers>      CSV headers, separated with \\",\\"
   -m --minify              minify output
   -q --query <query>       query to transorm data with
@@ -26,6 +27,7 @@ Options:
   -v, --version            output the version number
   --csv                    use CSV as input data
   --delimiter <delimiter>  CSV delimiter character, defaults to \\";\\"
+  --tsv                    use TSV as input data
   --headers <headers>      CSV headers, separated with \\",\\"
   -m --minify              minify output
   -q --query <query>       query to transorm data with
@@ -43,6 +45,7 @@ Options:
   -v, --version            output the version number
   --csv                    use CSV as input data
   --delimiter <delimiter>  CSV delimiter character, defaults to \\";\\"
+  --tsv                    use TSV as input data
   --headers <headers>      CSV headers, separated with \\",\\"
   -m --minify              minify output
   -q --query <query>       query to transorm data with

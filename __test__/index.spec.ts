@@ -201,5 +201,52 @@ describe('JSONNI', () => {
         ).toEqual(result);
       });
     });
+
+    describe('TSV', () => {
+      const file = 'tsv.tsv';
+
+      test.each([
+        ['$input.filter(i => i.isActive).map(i => i._id)', [2, 3, 4]],
+        ['$input.map(i => i.isActive)', [false, true, true, true, false]],
+        ['_.chain($input).filter("isActive").map("_id")', [2, 3, 4]],
+        ['_.chain($input).map("isActive")', [false, true, true, true, false]],
+        [
+          'from($input).filter(i => i.isActive).map(i => i._id).toArray()',
+          [2, 3, 4]
+        ],
+        [
+          'from($input).map(i => i.isActive).toArray()',
+          [false, true, true, true, false]
+        ]
+      ])('%s', async (query: string, result: any) => {
+        expect(await getStdout(file, query, ['--tsv'])).toEqual(result);
+      });
+    });
+
+    describe('TSV (without header line)', () => {
+      const file = 'tsvWithoutHeaders.tsv';
+
+      test.each([
+        ['$input.filter(i => i.isActive).map(i => i._id)', [2, 3, 4]]
+        // ['$input.map(i => i.isActive)', [false, true, true, true, false]],
+        // ['_.chain($input).filter("isActive").map("_id")', [2, 3, 4]],
+        // ['_.chain($input).map("isActive")', [false, true, true, true, false]],
+        // [
+        //   'from($input).filter(i => i.isActive).map(i => i._id).toArray()',
+        //   [2, 3, 4]
+        // ],
+        // [
+        //   'from($input).map(i => i.isActive).toArray()',
+        //   [false, true, true, true, false]
+        // ]
+      ])('%s', async (query: string, result: any) => {
+        expect(
+          await getStdout(file, query, [
+            '--tsv',
+            '--headers _id,isActive,age,name,registered'
+          ])
+        ).toEqual(result);
+      });
+    });
   });
 });

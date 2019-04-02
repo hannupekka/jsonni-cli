@@ -99,6 +99,7 @@ const evaluateQuery = (input: string, query: Query) => {
       '--delimiter <delimiter>',
       'CSV delimiter character, defaults to ";"'
     )
+    .option('--tsv', 'use TSV as input data')
     .option('--headers <headers>', 'CSV headers, separated with ","')
     .option('-m --minify', 'minify output')
     .option('-q --query <query>', 'query to transorm data with')
@@ -115,18 +116,19 @@ const evaluateQuery = (input: string, query: Query) => {
   const query = program.query;
   const shouldMinify = program.minify;
   const useCSV = program.csv;
-  const delimiter = program.delimiter || ';';
+  const useTSV = program.tsv;
+  const delimiter = useTSV ? '\t' : program.delimiter || ';';
   const headers = program.headers;
 
   // If no query, show help and exit.
-  if (_.isNil(query)) {
+  if (_.isNil(query) || query === '') {
     program.help();
   }
 
   // Read input from stdin.
   let input = await getStdin();
 
-  if (useCSV) {
+  if (useCSV || useTSV) {
     const csvOptions = {
       delimiter,
       checkType: true,
