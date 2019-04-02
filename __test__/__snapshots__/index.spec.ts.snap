@@ -7,12 +7,12 @@ Object {
 
 Options:
   -v, --version            output the version number
-  --csv                    use CSV as input data
-  --delimiter <delimiter>  CSV delimiter character, defaults to \\";\\"
-  --tsv                    use TSV as input data
-  --headers <headers>      CSV headers, separated with \\",\\"
   -m --minify              minify output
-  -q --query <query>       query to transorm data with
+  -q --query <query>       query to transform data with
+  --csv                    use CSV as input data
+  --tsv                    use TSV as input data
+  --delimiter <delimiter>  CSV/TSV delimiter character. Defaults to \\";\\"
+  --headers <headers>      CSV/TSV headers, indicates that input does not have headers. Separated with \\",\\"
   -h, --help               output usage information
 ",
 }
@@ -25,13 +25,79 @@ Object {
 
 Options:
   -v, --version            output the version number
-  --csv                    use CSV as input data
-  --delimiter <delimiter>  CSV delimiter character, defaults to \\";\\"
-  --tsv                    use TSV as input data
-  --headers <headers>      CSV headers, separated with \\",\\"
   -m --minify              minify output
-  -q --query <query>       query to transorm data with
+  -q --query <query>       query to transform data with
+  --csv                    use CSV as input data
+  --tsv                    use TSV as input data
+  --delimiter <delimiter>  CSV/TSV delimiter character. Defaults to \\";\\"
+  --headers <headers>      CSV/TSV headers, indicates that input does not have headers. Separated with \\",\\"
   -h, --help               output usage information
+",
+}
+`;
+
+exports[`JSONNI help should be printed with invalid query and show error message 1`] = `
+Object {
+  "stderr": "
+Invalid query
+
+",
+  "stdout": "Usage: index [options]
+
+Options:
+  -v, --version            output the version number
+  -m --minify              minify output
+  -q --query <query>       query to transform data with
+  --csv                    use CSV as input data
+  --tsv                    use TSV as input data
+  --delimiter <delimiter>  CSV/TSV delimiter character. Defaults to \\";\\"
+  --headers <headers>      CSV/TSV headers, indicates that input does not have headers. Separated with \\",\\"
+  -h, --help               output usage information
+
+Examples:
+  $ cat data.json | jsonni
+  $ cat data.json | jsonni -q '$input.map(i => i.name)'
+
+  $ cat data.csv | jsonni --csv 
+  $ cat data.csv | jsonni --csv --delimiter=',' 
+  $ cat dataWithoutHeaders.csv | jsonni --csv --headers=_id,isActive,age,name,registered
+
+  $ cat data.tsv | jsonni --tsv
+  $ cat dataWithoutHeaders.tsv | jsonni --tsv --headers=_id,isActive,age,name,registered
+
+",
+}
+`;
+
+exports[`JSONNI help should be printed with query without input and show error message 1`] = `
+Object {
+  "stderr": "
+Input missing
+
+",
+  "stdout": "Usage: index [options]
+
+Options:
+  -v, --version            output the version number
+  -m --minify              minify output
+  -q --query <query>       query to transform data with
+  --csv                    use CSV as input data
+  --tsv                    use TSV as input data
+  --delimiter <delimiter>  CSV/TSV delimiter character. Defaults to \\";\\"
+  --headers <headers>      CSV/TSV headers, indicates that input does not have headers. Separated with \\",\\"
+  -h, --help               output usage information
+
+Examples:
+  $ cat data.json | jsonni
+  $ cat data.json | jsonni -q '$input.map(i => i.name)'
+
+  $ cat data.csv | jsonni --csv 
+  $ cat data.csv | jsonni --csv --delimiter=',' 
+  $ cat dataWithoutHeaders.csv | jsonni --csv --headers=_id,isActive,age,name,registered
+
+  $ cat data.tsv | jsonni --tsv
+  $ cat dataWithoutHeaders.tsv | jsonni --tsv --headers=_id,isActive,age,name,registered
+
 ",
 }
 `;
@@ -43,16 +109,24 @@ Object {
 
 Options:
   -v, --version            output the version number
-  --csv                    use CSV as input data
-  --delimiter <delimiter>  CSV delimiter character, defaults to \\";\\"
-  --tsv                    use TSV as input data
-  --headers <headers>      CSV headers, separated with \\",\\"
   -m --minify              minify output
-  -q --query <query>       query to transorm data with
+  -q --query <query>       query to transform data with
+  --csv                    use CSV as input data
+  --tsv                    use TSV as input data
+  --delimiter <delimiter>  CSV/TSV delimiter character. Defaults to \\";\\"
+  --headers <headers>      CSV/TSV headers, indicates that input does not have headers. Separated with \\",\\"
   -h, --help               output usage information
 
 Examples:
+  $ cat data.json | jsonni
   $ cat data.json | jsonni -q '$input.map(i => i.name)'
+
+  $ cat data.csv | jsonni --csv 
+  $ cat data.csv | jsonni --csv --delimiter=',' 
+  $ cat dataWithoutHeaders.csv | jsonni --csv --headers=_id,isActive,age,name,registered
+
+  $ cat data.tsv | jsonni --tsv
+  $ cat dataWithoutHeaders.tsv | jsonni --tsv --headers=_id,isActive,age,name,registered
 
 ",
 }

@@ -2,11 +2,13 @@ import stringifyObject from 'stringify-object';
 import safeEval from 'safe-eval';
 import getStdin from 'get-stdin';
 import commander from 'commander';
-import consola from 'consola';
+import chalk from 'chalk';
 import _ from 'lodash';
 import { from } from 'fromfrom';
 import jsonMinify from 'jsonminify';
 import csv from 'csvtojson';
+
+const logger = (message: string) => console.error(`\n${chalk.red(message)}\n`);
 
 const packageInfo = require('../package.json');
 
@@ -64,6 +66,14 @@ const parseQueryValueAndContext = (input: string, query: string): Query => {
     };
   }
 
+  // Empty query, just return input.
+  if (_.includes(['', '$input'], queryValue)) {
+    return {
+      queryValue: `${input}.map(i => i)`,
+      context: null
+    };
+  }
+
   // Unsupported query.
   return null;
 };
@@ -85,7 +95,7 @@ const evaluateQuery = (input: string, query: Query) => {
       ? JSON.stringify(evalQuery, null, 2)
       : stringifyObject(evalQuery, { singleQuotes: false });
   } catch (e) {
-    consola.error(e.toString());
+    logger(e.toString());
     process.exit(0);
   }
 };
@@ -94,21 +104,36 @@ const evaluateQuery = (input: string, query: Query) => {
   // Handle arguments.
   const program = commander
     .version(packageInfo.version, '-v, --version')
+    .option('-m --minify', 'minify output')
+    .option('-q --query <query>', 'query to transform data with')
     .option('--csv', 'use CSV as input data')
+    .option('--tsv', 'use TSV as input data')
     .option(
       '--delimiter <delimiter>',
-      'CSV delimiter character, defaults to ";"'
+      'CSV/TSV delimiter character. Defaults to ";"'
     )
-    .option('--tsv', 'use TSV as input data')
-    .option('--headers <headers>', 'CSV headers, separated with ","')
-    .option('-m --minify', 'minify output')
-    .option('-q --query <query>', 'query to transorm data with')
+    .option(
+      '--headers <headers>',
+      'CSV/TSV headers, indicates that input does not have headers. Separated with ","'
+    )
     .parse(process.argv);
 
   program.on('--help', () => {
     console.log('');
     console.log('Examples:');
+    console.log('  $ cat data.json | jsonni');
     console.log("  $ cat data.json | jsonni -q '$input.map(i => i.name)'");
+    console.log('');
+    console.log('  $ cat data.csv | jsonni --csv ');
+    console.log("  $ cat data.csv | jsonni --csv --delimiter=',' ");
+    console.log(
+      '  $ cat dataWithoutHeaders.csv | jsonni --csv --headers=_id,isActive,age,name,registered'
+    );
+    console.log('');
+    console.log('  $ cat data.tsv | jsonni --tsv');
+    console.log(
+      '  $ cat dataWithoutHeaders.tsv | jsonni --tsv --headers=_id,isActive,age,name,registered'
+    );
     console.log('');
   });
 
@@ -120,13 +145,16 @@ const evaluateQuery = (input: string, query: Query) => {
   const delimiter = useTSV ? '\t' : program.delimiter || ';';
   const headers = program.headers;
 
-  // If no query, show help and exit.
-  if (_.isNil(query) || query === '') {
-    program.help();
-  }
-
   // Read input from stdin.
   let input = await getStdin();
+  if (input.length === 0) {
+    if (!_.isNil(query)) {
+      logger('Input missing');
+    }
+
+    // If no input, show help and exit.
+    program.help();
+  }
 
   if (useCSV || useTSV) {
     const csvOptions = {
@@ -140,6 +168,12 @@ const evaluateQuery = (input: string, query: Query) => {
   }
 
   const queryContext = parseQueryValueAndContext(input, query);
+
+  if (_.isNil(queryContext)) {
+    logger('Invalid query');
+    program.help();
+  }
+
   const evaluated = evaluateQuery(input, queryContext);
 
   const result = shouldMinify ? jsonMinify(evaluated) : evaluated;
