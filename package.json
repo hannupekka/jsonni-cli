@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "Manipulate data with ES6, Lodash or fromfrom, from your command line",
   "main": "./bin/index.js",
+  "preferGlobal": true,
   "scripts": {
-    "build": "tsc && rollup -c && chmod a+x bin/index.js",
+    "build": "tsc && rollup -c",
     "dev": "tsc -w",
     "lint": "eslint src/**/*.ts",
     "test": "npm run build && jest",
@@ -47,6 +48,7 @@
     "commander": "^2.19.0",
     "consola": "^2.5.8",
     "convert-to-object": "0.0.4",
+    "csvtojson": "^2.0.8",
     "eslint": "^5.16.0",
     "fromfrom": "^1.1.1",
     "get-stdin": "^6.0.0",
@@ -67,7 +69,7 @@
     "typescript": "^3.4.1"
   },
   "bin": {
-    "jsonni": "./bin/index.js"
+    "jsonni": "./index.js"
   },
   "husky": {
     "hooks": {

@@ -6,6 +6,7 @@ import consola from 'consola';
 import _ from 'lodash';
 import { from } from 'fromfrom';
 import jsonMinify from 'jsonminify';
+import csv from 'csvtojson';
 
 const packageInfo = require('../package.json');
 
@@ -93,8 +94,14 @@ const evaluateQuery = (input: string, query: Query) => {
   // Handle arguments.
   const program = commander
     .version(packageInfo.version, '-v, --version')
-    .option('-m --minify', 'Minify output')
-    .option('-q --query <query>', 'Query to transorm data with')
+    .option('--csv', 'use CSV as input data')
+    .option(
+      '--delimiter <delimiter>',
+      'CSV delimiter character, defaults to ";"'
+    )
+    .option('--headers <headers>', 'CSV headers, separated with ","')
+    .option('-m --minify', 'minify output')
+    .option('-q --query <query>', 'query to transorm data with')
     .parse(process.argv);
 
   program.on('--help', () => {
@@ -107,6 +114,9 @@ const evaluateQuery = (input: string, query: Query) => {
   // Get query string to be executed against input.
   const query = program.query;
   const shouldMinify = program.minify;
+  const useCSV = program.csv;
+  const delimiter = program.delimiter || ';';
+  const headers = program.headers;
 
   // If no query, show help and exit.
   if (_.isNil(query)) {
@@ -114,7 +124,18 @@ const evaluateQuery = (input: string, query: Query) => {
   }
 
   // Read input from stdin.
-  const input = await getStdin();
+  let input = await getStdin();
+
+  if (useCSV) {
+    const csvOptions = {
+      delimiter,
+      checkType: true,
+      ...(headers && { headers: headers.split(',') }),
+      ...(headers && { noheader: true })
+    };
+
+    input = JSON.stringify(await csv(csvOptions).fromString(input));
+  }
 
   const queryContext = parseQueryValueAndContext(input, query);
   const evaluated = evaluateQuery(input, queryContext);

@@ -6,10 +6,13 @@ Object {
   "stdout": "Usage: index [options]
 
 Options:
-  -v, --version       output the version number
-  -m --minify         Minify output
-  -q --query <query>  Query to transorm data with
-  -h, --help          output usage information
+  -v, --version            output the version number
+  --csv                    use CSV as input data
+  --delimiter <delimiter>  CSV delimiter character, defaults to \\";\\"
+  --headers <headers>      CSV headers, separated with \\",\\"
+  -m --minify              minify output
+  -q --query <query>       query to transorm data with
+  -h, --help               output usage information
 ",
 }
 `;
@@ -20,10 +23,13 @@ Object {
   "stdout": "Usage: index [options]
 
 Options:
-  -v, --version       output the version number
-  -m --minify         Minify output
-  -q --query <query>  Query to transorm data with
-  -h, --help          output usage information
+  -v, --version            output the version number
+  --csv                    use CSV as input data
+  --delimiter <delimiter>  CSV delimiter character, defaults to \\";\\"
+  --headers <headers>      CSV headers, separated with \\",\\"
+  -m --minify              minify output
+  -q --query <query>       query to transorm data with
+  -h, --help               output usage information
 ",
 }
 `;
@@ -34,10 +40,13 @@ Object {
   "stdout": "Usage: index [options]
 
 Options:
-  -v, --version       output the version number
-  -m --minify         Minify output
-  -q --query <query>  Query to transorm data with
-  -h, --help          output usage information
+  -v, --version            output the version number
+  --csv                    use CSV as input data
+  --delimiter <delimiter>  CSV delimiter character, defaults to \\";\\"
+  --headers <headers>      CSV headers, separated with \\",\\"
+  -m --minify              minify output
+  -q --query <query>       query to transorm data with
+  -h, --help               output usage information
 
 Examples:
   $ cat data.json | jsonni -q '$input.map(i => i.name)'
