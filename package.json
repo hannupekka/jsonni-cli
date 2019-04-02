@@ -12,7 +12,8 @@
     "prepublishOnly": "npm run build"
   },
   "files": [
-    "bin"
+    "bin",
+    "index.js"
   ],
   "repository": {
     "type": "git",
