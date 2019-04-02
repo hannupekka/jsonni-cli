@@ -7,6 +7,7 @@ import _ from 'lodash';
 import { from } from 'fromfrom';
 import jsonMinify from 'jsonminify';
 import csv from 'csvtojson';
+import unescapeJs from 'unescape-js';
 
 const logger = (message: string) => console.error(`\n${chalk.red(message)}\n`);
 
@@ -84,16 +85,21 @@ const parseQueryValueAndContext = (input: string, query: string): Query => {
  * @param {Query} query Query
  *
  */
-const evaluateQuery = (input: string, query: Query) => {
+const evaluateQuery = (input: string, query: Query, indent: string = '  ') => {
   const { queryValue, context } = query;
+
+  const unescapedIndent = unescapeJs(indent);
 
   try {
     const evalQuery = safeEval(queryValue, context);
     const isInputJSON = isJSON(input);
 
     return isInputJSON
-      ? JSON.stringify(evalQuery, null, 2)
-      : stringifyObject(evalQuery, { singleQuotes: false });
+      ? JSON.stringify(evalQuery, null, unescapedIndent)
+      : stringifyObject(evalQuery, {
+          indent: unescapedIndent,
+          singleQuotes: false
+        });
   } catch (e) {
     logger(e.toString());
     process.exit(0);
@@ -104,6 +110,7 @@ const evaluateQuery = (input: string, query: Query) => {
   // Handle arguments.
   const program = commander
     .version(packageInfo.version, '-v, --version')
+    .option('-i --indent <indent>', 'output indentation, defaults to "  "')
     .option('-m --minify', 'minify output')
     .option('-q --query <query>', 'query to transform data with')
     .option('--csv', 'use CSV as input data')
@@ -139,6 +146,7 @@ const evaluateQuery = (input: string, query: Query) => {
 
   // Get query string to be executed against input.
   const query = program.query;
+  const indent = program.indent;
   const shouldMinify = program.minify;
   const useCSV = program.csv;
   const useTSV = program.tsv;
@@ -174,7 +182,7 @@ const evaluateQuery = (input: string, query: Query) => {
     program.help();
   }
 
-  const evaluated = evaluateQuery(input, queryContext);
+  const evaluated = evaluateQuery(input, queryContext, indent);
 
   const result = shouldMinify ? jsonMinify(evaluated) : evaluated;
 

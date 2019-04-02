@@ -1,5 +1,6 @@
 import util from 'util';
 import { exec } from 'child_process';
+import unescapeJs from 'unescape-js';
 
 const execAsync = util.promisify(exec);
 const binaryPath = 'node ./bin/index.js';
@@ -7,14 +8,18 @@ const binaryPath = 'node ./bin/index.js';
 const getStdout = async (
   filename: string,
   query: string,
-  params: string[] = []
+  params: string[] = [],
+  indent?: string
 ) => {
   const command = `cat ./__test__/data/${filename} | ${binaryPath} ${params.join(
     ' '
   )} -q '${query}'`;
+
   const { stdout } = await execAsync(command);
 
-  return JSON.parse(stdout);
+  return indent
+    ? JSON.stringify(JSON.parse(stdout), null, unescapeJs(indent))
+    : JSON.parse(stdout);
 };
 
 describe('JSONNI', () => {
@@ -70,6 +75,28 @@ describe('JSONNI', () => {
       const command = `cat ./__test__/data/${file} | ${binaryPath} --minify -q '${query}'`;
       const { stdout } = await execAsync(command);
       expect(stdout).toMatchSnapshot();
+    });
+  });
+
+  describe('indent', () => {
+    const file = 'json.json';
+    const query = '$input';
+
+    test('should indent output with -m', async () => {
+      expect(await getStdout(file, query)).toMatchSnapshot();
+      expect(await getStdout(file, query, ['-i " "'], ' ')).toMatchSnapshot();
+      expect(
+        await getStdout(file, query, ['-i "\t\t"'], '\t\t')
+      ).toMatchSnapshot();
+    });
+
+    test('should indent output with --minify', async () => {
+      expect(
+        await getStdout(file, query, ['--indent=" "'], ' ')
+      ).toMatchSnapshot();
+      expect(
+        await getStdout(file, query, ['--indent="\t\t"'], '\t\t')
+      ).toMatchSnapshot();
     });
   });
 

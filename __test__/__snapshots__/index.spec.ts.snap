@@ -7,6 +7,7 @@ Object {
 
 Options:
   -v, --version            output the version number
+  -i --indent <indent>     output indentation, defaults to \\"  \\"
   -m --minify              minify output
   -q --query <query>       query to transform data with
   --csv                    use CSV as input data
@@ -25,6 +26,7 @@ Object {
 
 Options:
   -v, --version            output the version number
+  -i --indent <indent>     output indentation, defaults to \\"  \\"
   -m --minify              minify output
   -q --query <query>       query to transform data with
   --csv                    use CSV as input data
@@ -46,6 +48,7 @@ Invalid query
 
 Options:
   -v, --version            output the version number
+  -i --indent <indent>     output indentation, defaults to \\"  \\"
   -m --minify              minify output
   -q --query <query>       query to transform data with
   --csv                    use CSV as input data
@@ -79,6 +82,7 @@ Input missing
 
 Options:
   -v, --version            output the version number
+  -i --indent <indent>     output indentation, defaults to \\"  \\"
   -m --minify              minify output
   -q --query <query>       query to transform data with
   --csv                    use CSV as input data
@@ -109,6 +113,7 @@ Object {
 
 Options:
   -v, --version            output the version number
+  -i --indent <indent>     output indentation, defaults to \\"  \\"
   -m --minify              minify output
   -q --query <query>       query to transform data with
   --csv                    use CSV as input data
@@ -130,6 +135,206 @@ Examples:
 
 ",
 }
+`;
+
+exports[`JSONNI indent should indent output with --minify 1`] = `
+"[
+ {
+  \\"_id\\": 1,
+  \\"isActive\\": false,
+  \\"age\\": 30,
+  \\"name\\": \\"Meadows Parker\\",
+  \\"registered\\": \\"2017-10-03T09:23:04 -03:00\\"
+ },
+ {
+  \\"_id\\": 2,
+  \\"isActive\\": true,
+  \\"age\\": 30,
+  \\"name\\": \\"Mckay Barnett\\",
+  \\"registered\\": \\"2017-03-28T04:16:44 -03:00\\"
+ },
+ {
+  \\"_id\\": 3,
+  \\"isActive\\": true,
+  \\"age\\": 40,
+  \\"name\\": \\"Newman Barr\\",
+  \\"registered\\": \\"2018-01-05T04:30:58 -02:00\\"
+ },
+ {
+  \\"_id\\": 4,
+  \\"isActive\\": true,
+  \\"age\\": 39,
+  \\"name\\": \\"Nona Mercado\\",
+  \\"registered\\": \\"2016-12-27T03:49:11 -02:00\\"
+ },
+ {
+  \\"_id\\": 5,
+  \\"isActive\\": false,
+  \\"age\\": 25,
+  \\"name\\": \\"Hurley Charles\\",
+  \\"registered\\": \\"2017-08-18T10:50:52 -03:00\\"
+ }
+]"
+`;
+
+exports[`JSONNI indent should indent output with --minify 2`] = `
+"[
+		{
+				\\"_id\\": 1,
+				\\"isActive\\": false,
+				\\"age\\": 30,
+				\\"name\\": \\"Meadows Parker\\",
+				\\"registered\\": \\"2017-10-03T09:23:04 -03:00\\"
+		},
+		{
+				\\"_id\\": 2,
+				\\"isActive\\": true,
+				\\"age\\": 30,
+				\\"name\\": \\"Mckay Barnett\\",
+				\\"registered\\": \\"2017-03-28T04:16:44 -03:00\\"
+		},
+		{
+				\\"_id\\": 3,
+				\\"isActive\\": true,
+				\\"age\\": 40,
+				\\"name\\": \\"Newman Barr\\",
+				\\"registered\\": \\"2018-01-05T04:30:58 -02:00\\"
+		},
+		{
+				\\"_id\\": 4,
+				\\"isActive\\": true,
+				\\"age\\": 39,
+				\\"name\\": \\"Nona Mercado\\",
+				\\"registered\\": \\"2016-12-27T03:49:11 -02:00\\"
+		},
+		{
+				\\"_id\\": 5,
+				\\"isActive\\": false,
+				\\"age\\": 25,
+				\\"name\\": \\"Hurley Charles\\",
+				\\"registered\\": \\"2017-08-18T10:50:52 -03:00\\"
+		}
+]"
+`;
+
+exports[`JSONNI indent should indent output with -m 1`] = `
+Array [
+  Object {
+    "_id": 1,
+    "age": 30,
+    "isActive": false,
+    "name": "Meadows Parker",
+    "registered": "2017-10-03T09:23:04 -03:00",
+  },
+  Object {
+    "_id": 2,
+    "age": 30,
+    "isActive": true,
+    "name": "Mckay Barnett",
+    "registered": "2017-03-28T04:16:44 -03:00",
+  },
+  Object {
+    "_id": 3,
+    "age": 40,
+    "isActive": true,
+    "name": "Newman Barr",
+    "registered": "2018-01-05T04:30:58 -02:00",
+  },
+  Object {
+    "_id": 4,
+    "age": 39,
+    "isActive": true,
+    "name": "Nona Mercado",
+    "registered": "2016-12-27T03:49:11 -02:00",
+  },
+  Object {
+    "_id": 5,
+    "age": 25,
+    "isActive": false,
+    "name": "Hurley Charles",
+    "registered": "2017-08-18T10:50:52 -03:00",
+  },
+]
+`;
+
+exports[`JSONNI indent should indent output with -m 2`] = `
+"[
+ {
+  \\"_id\\": 1,
+  \\"isActive\\": false,
+  \\"age\\": 30,
+  \\"name\\": \\"Meadows Parker\\",
+  \\"registered\\": \\"2017-10-03T09:23:04 -03:00\\"
+ },
+ {
+  \\"_id\\": 2,
+  \\"isActive\\": true,
+  \\"age\\": 30,
+  \\"name\\": \\"Mckay Barnett\\",
+  \\"registered\\": \\"2017-03-28T04:16:44 -03:00\\"
+ },
+ {
+  \\"_id\\": 3,
+  \\"isActive\\": true,
+  \\"age\\": 40,
+  \\"name\\": \\"Newman Barr\\",
+  \\"registered\\": \\"2018-01-05T04:30:58 -02:00\\"
+ },
+ {
+  \\"_id\\": 4,
+  \\"isActive\\": true,
+  \\"age\\": 39,
+  \\"name\\": \\"Nona Mercado\\",
+  \\"registered\\": \\"2016-12-27T03:49:11 -02:00\\"
+ },
+ {
+  \\"_id\\": 5,
+  \\"isActive\\": false,
+  \\"age\\": 25,
+  \\"name\\": \\"Hurley Charles\\",
+  \\"registered\\": \\"2017-08-18T10:50:52 -03:00\\"
+ }
+]"
+`;
+
+exports[`JSONNI indent should indent output with -m 3`] = `
+"[
+		{
+				\\"_id\\": 1,
+				\\"isActive\\": false,
+				\\"age\\": 30,
+				\\"name\\": \\"Meadows Parker\\",
+				\\"registered\\": \\"2017-10-03T09:23:04 -03:00\\"
+		},
+		{
+				\\"_id\\": 2,
+				\\"isActive\\": true,
+				\\"age\\": 30,
+				\\"name\\": \\"Mckay Barnett\\",
+				\\"registered\\": \\"2017-03-28T04:16:44 -03:00\\"
+		},
+		{
+				\\"_id\\": 3,
+				\\"isActive\\": true,
+				\\"age\\": 40,
+				\\"name\\": \\"Newman Barr\\",
+				\\"registered\\": \\"2018-01-05T04:30:58 -02:00\\"
+		},
+		{
+				\\"_id\\": 4,
+				\\"isActive\\": true,
+				\\"age\\": 39,
+				\\"name\\": \\"Nona Mercado\\",
+				\\"registered\\": \\"2016-12-27T03:49:11 -02:00\\"
+		},
+		{
+				\\"_id\\": 5,
+				\\"isActive\\": false,
+				\\"age\\": 25,
+				\\"name\\": \\"Hurley Charles\\",
+				\\"registered\\": \\"2017-08-18T10:50:52 -03:00\\"
+		}
+]"
 `;
 
 exports[`JSONNI minify should minify output with --minify 1`] = `

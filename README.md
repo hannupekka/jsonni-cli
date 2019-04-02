@@ -17,6 +17,7 @@ Usage: jsonni [options]
 
 Options:
   -v, --version            output the version number
+  -i --indent <indent>     output indentation, defaults to "  "
   -m --minify              minify output
   -q --query <query>       query to transform data with
   --csv                    use CSV as input data
