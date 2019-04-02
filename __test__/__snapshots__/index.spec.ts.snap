@@ -350,7 +350,7 @@ exports[`JSONNI minify should minify output with -m 1`] = `
 exports[`JSONNI version should be printed with --version 1`] = `
 Object {
   "stderr": "",
-  "stdout": "1.0.0
+  "stdout": "1.1.0
 ",
 }
 `;
@@ -358,7 +358,7 @@ Object {
 exports[`JSONNI version should be printed with -v 1`] = `
 Object {
   "stderr": "",
-  "stdout": "1.0.0
+  "stdout": "1.1.0
 ",
 }
 `;
