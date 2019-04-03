@@ -10,54 +10,77 @@ Command line version of [JSONNI](https://github.com/hannupekka/jsonni)
 
 `npm install -g jsonni-cli`
 
+## Features
+
+- Reads data from `stdin`
+- Supports different syntaxes for querying data
+  - ES
+  - Lodash
+  - fromfrom
+- Supports multiple output formats
+  - JSON
+  - CSV
+  - TSV
+- Customizable output indentation
+- Optionally minimized output JSON
+
 ## Usage
 
 ```
 Usage: jsonni [options]
 
 Options:
-  -v, --version            output the version number
-  -i --indent <indent>     output indentation, defaults to "  "
-  -m --minify              minify output
-  -q --query <query>       query to transform data with
-  --csv                    use CSV as input data
-  --tsv                    use TSV as input data
-  --delimiter <delimiter>  CSV/TSV delimiter character. Defaults to ";"
-  --headers <headers>      CSV/TSV headers, indicates that input does not have headers. Separated with ","
-  -h, --help               output usage information
-
-Examples:
-  $ cat data.json | jsonni
-  $ cat data.json | jsonni -q '$input.map(i => i.name)'
-
-  $ cat data.csv | jsonni --csv
-  $ cat data.csv | jsonni --csv --delimiter=','
-  $ cat dataWithoutHeaders.csv | jsonni --csv --headers=_id,isActive,age,name,registered
-
-  $ cat data.tsv | jsonni --tsv
-  $ cat dataWithoutHeaders.tsv | jsonni --tsv --headers=_id,isActive,age,name,registered
+  -v, --version                   output the version number
+  -m --minify                     minify output
+  -q --query <query>              query to transform data with
+  --input <format>                input format. Available formats: json, tsv, csv
+  --input-header <header>         input CSV/TSV headers. Separated with ","
+  --input-delimiter <delimiter>   CSV/TSV input delimiter character. Defaults to ","
+  --output <format>               output format. Available formats: json, tsv, csv
+  --output-delimiter <delimiter>  CSV/TSV output delimiter character. Defaults to ","
+  --indent <indent>               output indentation, defaults to "  "
+  -h, --help                      output usage information
 ```
 
 ## Examples
 
-![ES6](./screenshots/default.png)
+![default.png](./screenshots/default.png)
 
-### Parsing CSV
+Grab first item
+![json_es_first.png](./screenshots/json_es_first.png)
 
-![ES6](./screenshots/csv.png)
+Filter
+![json_es_filter.png](./screenshots/json_es_filter.png)
 
-### ES6
+Lodash, with chain
+![json_lodash_chain.png](./screenshots/json_lodash_chain.png)
 
-![ES6](./screenshots/es_map.png)
+Lodash, without chain
+![json_lodash.png](./screenshots/json_lodash.png)
 
-### Lodash
+fromfrom
+![fromfrom.png](./screenshots/fromfrom.png)
 
-![ES6](./screenshots/lodash.png)
-![ES6](./screenshots/lodash_chain.png)
+JSON, with custom indentation
+![json_custom_indent.png](./screenshots/json_custom_indent.png)
 
-### fromfrom
+JSON to CSV
+![json_to_csv.png](./screenshots/json_to_csv.png)
 
-![ES6](./screenshots/fromfrom.png)
+JSON to TSV
+![json_to_tsv.png](./screenshots/json_to_tsv.png)
+
+CSV to JSON
+![csv_to_json.png](./screenshots/csv_to_json.png)
+
+CSV to CSV
+![csv_to_csv.png](./screenshots/csv_to_csv.png)
+
+CSV to TSV
+![csv_to_tsv.png](./screenshots/csv_to_tsv.png)
+
+CSV without headers
+![csv_without_headers.png](./screenshots/csv_without_headers.png)
 
 ## Acknowledgements
 
