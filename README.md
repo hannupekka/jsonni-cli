@@ -46,40 +46,52 @@ Options:
 
 ![default.png](./screenshots/default.png)
 
-Grab first item
+### Grab first item
+
 ![json_es_first.png](./screenshots/json_es_first.png)
 
-Filter
+### Filter
+
 ![json_es_filter.png](./screenshots/json_es_filter.png)
 
-Lodash, with chain
+### Lodash, with chain
+
 ![json_lodash_chain.png](./screenshots/json_lodash_chain.png)
 
-Lodash, without chain
+### Lodash, without chain
+
 ![json_lodash.png](./screenshots/json_lodash.png)
 
-fromfrom
+### fromfrom
+
 ![fromfrom.png](./screenshots/fromfrom.png)
 
-JSON, with custom indentation
+### JSON, with custom indentation
+
 ![json_custom_indent.png](./screenshots/json_custom_indent.png)
 
-JSON to CSV
+### JSON to CSV
+
 ![json_to_csv.png](./screenshots/json_to_csv.png)
 
-JSON to TSV
+### JSON to TSV
+
 ![json_to_tsv.png](./screenshots/json_to_tsv.png)
 
-CSV to JSON
+### CSV to JSON
+
 ![csv_to_json.png](./screenshots/csv_to_json.png)
 
-CSV to CSV
+### CSV to CSV
+
 ![csv_to_csv.png](./screenshots/csv_to_csv.png)
 
-CSV to TSV
+### CSV to TSV
+
 ![csv_to_tsv.png](./screenshots/csv_to_tsv.png)
 
-CSV without headers
+### CSV without headers
+
 ![csv_without_headers.png](./screenshots/csv_without_headers.png)
 
 ## Acknowledgements
