@@ -1,6 +1,8 @@
 import util from 'util';
+import _ from 'lodash';
 import { exec } from 'child_process';
 import unescapeJs from 'unescape-js';
+import { stripIndent } from 'common-tags';
 
 const execAsync = util.promisify(exec);
 const binaryPath = 'node ./bin/index.js';
@@ -17,9 +19,31 @@ const getStdout = async (
 
   const { stdout } = await execAsync(command);
 
+  // No need to parse CSV or TSV output.
+  if (
+    _.includes(params, '--output=csv') ||
+    _.includes(params, '--output=tsv')
+  ) {
+    return stdout;
+  }
+
   return indent
     ? JSON.stringify(JSON.parse(stdout), null, unescapeJs(indent))
     : JSON.parse(stdout);
+};
+
+const getStderr = async (
+  filename: string,
+  query: string,
+  params: string[] = []
+) => {
+  const command = `cat ./__test__/data/${filename} | ${binaryPath} ${params.join(
+    ' '
+  )} -q '${query}'`;
+
+  const { stderr } = await execAsync(command);
+
+  return stderr;
 };
 
 describe('JSONNI', () => {
@@ -51,16 +75,6 @@ describe('JSONNI', () => {
     });
   });
 
-  describe('version', () => {
-    test('should be printed with -v', async () => {
-      expect(await execAsync(`${binaryPath} -v`)).toMatchSnapshot();
-    });
-
-    test('should be printed with --version', async () => {
-      expect(await execAsync(`${binaryPath} --version`)).toMatchSnapshot();
-    });
-  });
-
   describe('minify', () => {
     const file = 'object.json';
     const query = '_.pick($input, ["name", "age"])';
@@ -82,15 +96,7 @@ describe('JSONNI', () => {
     const file = 'json.json';
     const query = '$input';
 
-    test('should indent output with -m', async () => {
-      expect(await getStdout(file, query)).toMatchSnapshot();
-      expect(await getStdout(file, query, ['-i " "'], ' ')).toMatchSnapshot();
-      expect(
-        await getStdout(file, query, ['-i "\t\t"'], '\t\t')
-      ).toMatchSnapshot();
-    });
-
-    test('should indent output with --minify', async () => {
+    test('should indent output with --indent', async () => {
       expect(
         await getStdout(file, query, ['--indent=" "'], ' ')
       ).toMatchSnapshot();
@@ -190,7 +196,7 @@ describe('JSONNI', () => {
           [false, true, true, true, false]
         ]
       ])('%s', async (query: string, result: any) => {
-        expect(await getStdout(file, query, ['--csv'])).toEqual(result);
+        expect(await getStdout(file, query, ['--input=csv'])).toEqual(result);
       });
     });
 
@@ -212,7 +218,7 @@ describe('JSONNI', () => {
         ]
       ])('%s', async (query: string, result: any) => {
         expect(
-          await getStdout(file, query, ['--csv', '--delimiter "|"'])
+          await getStdout(file, query, ['--input=csv', '--input-delimiter "|"'])
         ).toEqual(result);
       });
     });
@@ -236,8 +242,8 @@ describe('JSONNI', () => {
       ])('%s', async (query: string, result: any) => {
         expect(
           await getStdout(file, query, [
-            '--csv',
-            '--headers _id,isActive,age,name,registered'
+            '--input=csv',
+            '--input-header=_id,isActive,age,name,registered'
           ])
         ).toEqual(result);
       });
@@ -260,7 +266,7 @@ describe('JSONNI', () => {
           [false, true, true, true, false]
         ]
       ])('%s', async (query: string, result: any) => {
-        expect(await getStdout(file, query, ['--tsv'])).toEqual(result);
+        expect(await getStdout(file, query, ['--input=tsv'])).toEqual(result);
       });
     });
 
@@ -283,10 +289,169 @@ describe('JSONNI', () => {
       ])('%s', async (query: string, result: any) => {
         expect(
           await getStdout(file, query, [
-            '--tsv',
-            '--headers _id,isActive,age,name,registered'
+            '--input=tsv',
+            '--input-header=_id,isActive,age,name,registered'
           ])
         ).toEqual(result);
+      });
+    });
+
+    describe('JSON -> CSV', () => {
+      test('should produce CSV from JSON', async () => {
+        expect(await getStdout('json.json', '$input[0]', ['--output=csv']))
+          .toMatch(stripIndent`
+            "_id","isActive","age","name","registered"
+            1,false,30,"Meadows Parker","2017-10-03T09:23:04 -03:00"
+          `);
+      });
+    });
+
+    describe('CSV -> CSV', () => {
+      test('should produce CSV from CSV', async () => {
+        expect(
+          await getStdout('csvCustomDelimiter.csv', '$input[0]', [
+            '--input=csv',
+            '--input-delimiter="|"',
+            '--output=csv',
+            '--output-delimiter=,'
+          ])
+        ).toMatch(stripIndent`
+          "_id","isActive","age","name","registered"
+          1,false,30,"Meadows Parker","2017-10-03T09:23:04 -03:00"
+        `);
+      });
+    });
+
+    describe('CSV -> TSV', () => {
+      test('should produce TSV from CSV', async () => {
+        expect(
+          await getStdout('csv.csv', '$input[0]', [
+            '--input=csv',
+            '--output=tsv'
+          ])
+        ).toMatch(stripIndent`
+          "_id"	"isActive"	"age"	"name"	"registered"
+          1	false	30	"Meadows Parker"	"2017-10-03T09:23:04 -03:00"
+        `);
+      });
+    });
+
+    describe('CSV -> CSV (without header line)', () => {
+      test('should produce CSV from CSV', async () => {
+        expect(
+          await getStdout('csvWithoutHeaders.csv', '$input[0]', [
+            '--input=csv',
+            '--input-header=_id,isActive,age,name,registered',
+            '--output=csv'
+          ])
+        ).toMatch(stripIndent`
+          "_id","isActive","age","name","registered"
+          1,false,30,"Meadows Parker","2017-10-03T09:23:04 -03:00"
+        `);
+      });
+    });
+
+    describe('CSV -> TSV (without header line)', () => {
+      test('should produce TSV from CSV', async () => {
+        expect(
+          await getStdout('csvWithoutHeaders.csv', '$input[0]', [
+            '--input=csv',
+            '--input-header=_id,isActive,age,name,registered',
+            '--output=tsv'
+          ])
+        ).toMatch(stripIndent`
+          "_id"	"isActive"	"age"	"name"	"registered"
+          1	false	30	"Meadows Parker"	"2017-10-03T09:23:04 -03:00"
+        `);
+      });
+    });
+
+    describe('JSON -> TSV', () => {
+      test('should produce TSV from JSON', async () => {
+        expect(await getStdout('json.json', '$input[0]', ['--output=tsv']))
+          .toMatch(stripIndent`
+          "_id"	"isActive"	"age"	"name"	"registered"
+          1	false	30	"Meadows Parker"	"2017-10-03T09:23:04 -03:00"
+        `);
+      });
+    });
+
+    describe('TSV -> TSV', () => {
+      test('should produce TSV from TSV', async () => {
+        expect(
+          await getStdout('tsv.tsv', '$input[0]', [
+            '--input=tsv',
+            '--output=tsv'
+          ])
+        ).toMatch(stripIndent`
+          "_id"	"isActive"	"age"	"name"	"registered"
+          1	false	30	"Meadows Parker"	"2017-10-03T09:23:04 -03:00"
+        `);
+      });
+    });
+
+    describe('TSV -> CSV', () => {
+      test('should produce CSV from TSV', async () => {
+        expect(
+          await getStdout('tsv.tsv', '$input[0]', [
+            '--input=tsv',
+            '--output=csv',
+            '--output-delimiter="|"'
+          ])
+        ).toMatch(stripIndent`
+          "_id"|"isActive"|"age"|"name"|"registered"
+          1|false|30|"Meadows Parker"|"2017-10-03T09:23:04 -03:00"
+        `);
+      });
+    });
+
+    describe('TSV -> TSV (without header line)', () => {
+      test('should produce TSV from TSV', async () => {
+        expect(
+          await getStdout('tsvWithoutHeaders.tsv', '$input[0]', [
+            '--input=tsv',
+            '--input-header=_id,isActive,age,name,registered',
+            '--output=tsv'
+          ])
+        ).toMatch(stripIndent`
+          "_id"	"isActive"	"age"	"name"	"registered"
+          1	false	30	"Meadows Parker"	"2017-10-03T09:23:04 -03:00"
+        `);
+      });
+    });
+
+    describe('TSV -> CSV (without header line)', () => {
+      test('should produce CSV from TSV', async () => {
+        expect(
+          await getStdout('tsvWithoutHeaders.tsv', '$input[0]', [
+            '--input=tsv',
+            '--input-header=_id,isActive,age,name,registered',
+            '--output=csv'
+          ])
+        ).toMatch(stripIndent`
+          "_id","isActive","age","name","registered"
+          1,false,30,"Meadows Parker","2017-10-03T09:23:04 -03:00"
+        `);
+      });
+    });
+
+    describe('errors', () => {
+      test('should print on invalid query', async () => {
+        expect(await getStderr('json.json', 'foo', [])).toMatch(
+          'Invalid query'
+        );
+      });
+
+      test('should print on invalid input format', async () => {
+        expect(await getStderr('json.json', '$input', ['--input=foo'])).toMatch(
+          'Invalid input format'
+        );
+      });
+
+      test('should print on invalid output format', async () => {
+        expect(
+          await getStderr('json.json', '$input', ['--output=foo'])
+        ).toMatch('Invalid output format');
       });
     });
   });

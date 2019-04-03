@@ -8,10 +8,12 @@ import { from } from 'fromfrom';
 import jsonMinify from 'jsonminify';
 import csv from 'csvtojson';
 import unescapeJs from 'unescape-js';
+import { parse } from 'json2csv';
 
 const logger = (message: string) => console.error(`\n${chalk.red(message)}\n`);
-
 const packageInfo = require('../package.json');
+
+const ALLOWED_FORMATS = ['csv', 'tsv', 'json'];
 
 interface Query {
   queryValue: string;
@@ -42,9 +44,9 @@ const parseQueryValueAndContext = (input: string, query: string): Query => {
   const queryValue = _.trimEnd(query, ';');
 
   // ES6
-  if (queryValue.startsWith('$input.')) {
+  if (queryValue.startsWith('$input')) {
     return {
-      queryValue: queryValue.replace('$input.', `${input}.`),
+      queryValue: queryValue.replace('$input', `${input}`),
       context: null
     };
   }
@@ -110,48 +112,61 @@ const evaluateQuery = (input: string, query: Query, indent: string = '  ') => {
   // Handle arguments.
   const program = commander
     .version(packageInfo.version, '-v, --version')
-    .option('-i --indent <indent>', 'output indentation, defaults to "  "')
     .option('-m --minify', 'minify output')
     .option('-q --query <query>', 'query to transform data with')
-    .option('--csv', 'use CSV as input data')
-    .option('--tsv', 'use TSV as input data')
     .option(
-      '--delimiter <delimiter>',
-      'CSV/TSV delimiter character. Defaults to ";"'
+      '--input <format>',
+      'input format. Available formats: json, tsv, csv'
     )
     .option(
-      '--headers <headers>',
-      'CSV/TSV headers, indicates that input does not have headers. Separated with ","'
+      '--input-header <header>',
+      'input CSV/TSV headers. Separated with ","'
     )
+    .option(
+      '--input-delimiter <delimiter>',
+      'CSV/TSV input delimiter character. Defaults to ","'
+    )
+    .option(
+      '--output <format>',
+      'output format. Available formats: json, tsv, csv'
+    )
+    .option(
+      '--output-delimiter <delimiter>',
+      'CSV/TSV output delimiter character. Defaults to ","'
+    )
+    .option('--indent <indent>', 'output indentation, defaults to "  "')
     .parse(process.argv);
 
   program.on('--help', () => {
-    console.log('');
-    console.log('Examples:');
-    console.log('  $ cat data.json | jsonni');
-    console.log("  $ cat data.json | jsonni -q '$input.map(i => i.name)'");
-    console.log('');
-    console.log('  $ cat data.csv | jsonni --csv ');
-    console.log("  $ cat data.csv | jsonni --csv --delimiter=',' ");
-    console.log(
-      '  $ cat dataWithoutHeaders.csv | jsonni --csv --headers=_id,isActive,age,name,registered'
-    );
-    console.log('');
-    console.log('  $ cat data.tsv | jsonni --tsv');
-    console.log(
-      '  $ cat dataWithoutHeaders.tsv | jsonni --tsv --headers=_id,isActive,age,name,registered'
-    );
     console.log('');
   });
 
   // Get query string to be executed against input.
   const query = program.query;
-  const indent = program.indent;
   const shouldMinify = program.minify;
-  const useCSV = program.csv;
-  const useTSV = program.tsv;
-  const delimiter = useTSV ? '\t' : program.delimiter || ';';
-  const headers = program.headers;
+
+  const inputFormat: string = program.input || 'json';
+  const inputHeader: string = program.inputHeader;
+  const inputDelimiter: string =
+    program.inputDelimiter ||
+    (inputFormat.toLowerCase() === 'tsv' ? '\t' : ',');
+
+  const outputFormat: string = program.output || 'json';
+  const outputDelimiter: string =
+    program.outputDelimiter ||
+    (outputFormat.toLowerCase() === 'tsv' ? '\t' : ',');
+
+  const indent: string = program.indent;
+
+  if (!_.includes(ALLOWED_FORMATS, inputFormat)) {
+    logger('Invalid input format');
+    program.help();
+  }
+
+  if (!_.includes(ALLOWED_FORMATS, outputFormat)) {
+    logger('Invalid output format');
+    program.help();
+  }
 
   // Read input from stdin.
   let input = await getStdin();
@@ -164,17 +179,22 @@ const evaluateQuery = (input: string, query: Query, indent: string = '  ') => {
     program.help();
   }
 
-  if (useCSV || useTSV) {
+  // Final result.
+  let result;
+
+  // Input data is CSV/TSV.
+  if (_.includes(['csv', 'tsv'], inputFormat.toLowerCase())) {
     const csvOptions = {
-      delimiter,
+      delimiter: unescapeJs(inputDelimiter),
       checkType: true,
-      ...(headers && { headers: headers.split(',') }),
-      ...(headers && { noheader: true })
+      ...(inputHeader && { headers: inputHeader.split(',') }),
+      ...(inputHeader && { noheader: true })
     };
 
     input = JSON.stringify(await csv(csvOptions).fromString(input));
   }
 
+  // Parse query and context.
   const queryContext = parseQueryValueAndContext(input, query);
 
   if (_.isNil(queryContext)) {
@@ -182,9 +202,21 @@ const evaluateQuery = (input: string, query: Query, indent: string = '  ') => {
     program.help();
   }
 
+  // Evaluate query agains data.
   const evaluated = evaluateQuery(input, queryContext, indent);
 
-  const result = shouldMinify ? jsonMinify(evaluated) : evaluated;
+  if (outputFormat.toLowerCase() === 'json') {
+    result = shouldMinify ? jsonMinify(evaluated) : evaluated;
+  } else {
+    const json = JSON.parse(evaluated);
+
+    result = parse(json, {
+      delimiter: unescapeJs(outputDelimiter),
+      ...(inputHeader && { fields: inputHeader.split(',') })
+    });
+  }
 
   console.log(result);
-})();
+})().catch(e => {
+  logger(e.toString());
+});
