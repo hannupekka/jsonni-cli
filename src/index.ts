@@ -216,7 +216,12 @@ const evaluateQuery = (input: string, query: Query, indent: string = '  ') => {
     });
   }
 
-  console.log(result);
+  const output =
+    outputFormat.toLowerCase() === 'json'
+      ? _.trim(unescapeJs(result), '"')
+      : result;
+
+  console.log(output);
 })().catch(e => {
   logger(e.toString());
 });

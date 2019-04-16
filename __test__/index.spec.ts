@@ -27,9 +27,13 @@ const getStdout = async (
     return stdout;
   }
 
-  return indent
-    ? JSON.stringify(JSON.parse(stdout), null, unescapeJs(indent))
-    : JSON.parse(stdout);
+  try {
+    return indent
+      ? JSON.stringify(JSON.parse(stdout), null, unescapeJs(indent))
+      : JSON.parse(stdout);
+  } catch (err) {
+    return stdout;
+  }
 };
 
 const getStderr = async (
@@ -130,7 +134,6 @@ describe('JSONNI', () => {
       const file = 'object.json';
 
       test.each([
-        ['$input.name', 'Meadows Parker'],
         ['_.pick($input, ["name", "age"])', { name: 'Meadows Parker', age: 30 }]
       ])('%s', async (query: string, result: any) => {
         expect(await getStdout(file, query)).toEqual(result);
@@ -156,6 +159,17 @@ describe('JSONNI', () => {
       ])('%s', async (query: string, result: any) => {
         expect(await getStdout(file, query)).toEqual(result);
       });
+    });
+
+    describe('JSON (as joined string)', () => {
+      const file = 'json.json';
+
+      test.each([['$input[0].name'], ['$input.map(i => i.name).join("\\n")']])(
+        '%s',
+        async (query: string) => {
+          expect(await getStdout(file, query)).toMatchSnapshot();
+        }
+      );
     });
 
     describe('JSON (minified)', () => {

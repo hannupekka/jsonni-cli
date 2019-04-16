@@ -198,3 +198,17 @@ exports[`JSONNI minify should minify output with -m 1`] = `
 "{\\"name\\":\\"Meadows Parker\\",\\"age\\":30}
 "
 `;
+
+exports[`JSONNI query JSON (as joined string) $input.map(i => i.name).join("\\n") 1`] = `
+"Meadows Parker
+Mckay Barnett
+Newman Barr
+Nona Mercado
+Hurley Charles
+"
+`;
+
+exports[`JSONNI query JSON (as joined string) $input[0].name 1`] = `
+"Meadows Parker
+"
+`;
