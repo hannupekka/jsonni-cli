@@ -1,6 +1,6 @@
 {
   "name": "jsonni-cli",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Manipulate data with ES6, Lodash or fromfrom, from your command line",
   "main": "./bin/index.js",
   "preferGlobal": true,
