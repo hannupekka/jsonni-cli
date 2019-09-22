@@ -115,6 +115,7 @@ describe('JSONNI', () => {
       const file = 'array.json';
 
       test.each([
+        ['', [1, 2, 3, 4, 5]],
         ['$input.map(i => i * 2)', [2, 4, 6, 8, 10]],
         ['$input.map(i => i * 2).filter(i => i > 4)', [6, 8, 10]],
         ['_.map($input, i => i * 2)', [2, 4, 6, 8, 10]],
@@ -134,6 +135,16 @@ describe('JSONNI', () => {
       const file = 'object.json';
 
       test.each([
+        [
+          '',
+          {
+            _id: '5ca1b4b8b4e4a3bbcc29b3b0',
+            isActive: false,
+            age: 30,
+            name: 'Meadows Parker',
+            registered: '2017-10-03T09:23:04 -03:00'
+          }
+        ],
         ['_.pick($input, ["name", "age"])', { name: 'Meadows Parker', age: 30 }]
       ])('%s', async (query: string, result: any) => {
         expect(await getStdout(file, query)).toEqual(result);

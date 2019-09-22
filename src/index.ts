@@ -72,7 +72,7 @@ const parseQueryValueAndContext = (input: string, query: string): Query => {
   // Empty query, just return input.
   if (_.includes(['', '$input'], queryValue)) {
     return {
-      queryValue: `${input}.map(i => i)`,
+      queryValue: input,
       context: null
     };
   }
