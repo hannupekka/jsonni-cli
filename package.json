@@ -61,7 +61,7 @@
     "json2csv": "^4.4.1",
     "jsonminify": "^0.4.1",
     "lint-staged": "^8.1.5",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "prettier": "^1.16.4",
     "rollup": "^1.7.4",
     "rollup-plugin-commonjs": "^9.2.2",
