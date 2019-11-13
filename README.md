@@ -42,55 +42,111 @@ Options:
   -h, --help                      output usage information
 ```
 
+### About `-q` parameter
+
+Parameter value should be quoted with single quotes (`'`) instead of double (`"`).
+
 ## Examples
+
+```
+curl --silent http://jsonplaceholder.typicode.com/todos?_limit=5 | jsonni
+```
 
 ![default.png](./screenshots/default.png)
 
 ### Grab first item
 
+```
+curl --silent http://jsonplaceholder.typicode.com/todos?_limit=5 | jsonni -q '$input[0]'
+```
+
 ![json_es_first.png](./screenshots/json_es_first.png)
 
 ### Filter
+
+```
+curl --silent http://jsonplaceholder.typicode.com/todos?_limit=5 | jsonni -q '$input.filter(item => item.completed)'
+```
 
 ![json_es_filter.png](./screenshots/json_es_filter.png)
 
 ### Lodash, with chain
 
+```
+curl --silent http://jsonplaceholder.typicode.com/todos?_limit=5 | jsonni -q '_.chain($input).orderBy(["title"], ["asc"]).map("title")'
+```
+
 ![json_lodash_chain.png](./screenshots/json_lodash_chain.png)
 
 ### Lodash, without chain
+
+```
+curl --silent http://jsonplaceholder.typicode.com/todos?_limit=5 | jsonni -q '_.map(_.orderBy($input, ["title"], ["asc"]), "title")'
+```
 
 ![json_lodash.png](./screenshots/json_lodash.png)
 
 ### fromfrom
 
+```
+curl --silent http://jsonplaceholder.typicode.com/todos?_limit=5 | jsonni -q 'from($input).filter(item => item.title.startsWith("fugiat")).toArray()'
+```
+
 ![fromfrom.png](./screenshots/fromfrom.png)
 
 ### JSON, with custom indentation
+
+```
+curl --silent http://jsonplaceholder.typicode.com/todos?_limit=5 | jsonni -q '$input[0]' --indent="\t"
+```
 
 ![json_custom_indent.png](./screenshots/json_custom_indent.png)
 
 ### JSON to CSV
 
+```
+curl --silent http://jsonplaceholder.typicode.com/todos?_limit=5 | jsonni -q '$input[0]' --output=csv --output-delimiter=";"
+```
+
 ![json_to_csv.png](./screenshots/json_to_csv.png)
 
 ### JSON to TSV
+
+```
+curl --silent http://jsonplaceholder.typicode.com/todos?_limit=5 | jsonni -q '$input[0]' --output=tsv
+```
 
 ![json_to_tsv.png](./screenshots/json_to_tsv.png)
 
 ### CSV to JSON
 
+```
+cat csv.csv | jsonni -q '$input[0]' --input=csv
+```
+
 ![csv_to_json.png](./screenshots/csv_to_json.png)
 
 ### CSV to CSV
+
+```
+cat csv.csv | jsonni -q '$input.filter(user => user.isActive)' --input=csv --output=csv
+```
 
 ![csv_to_csv.png](./screenshots/csv_to_csv.png)
 
 ### CSV to TSV
 
+```
+cat csv.csv | jsonni -q '$input.filter(user => user.isActive)' --input=csv --output=tsv
+```
+
 ![csv_to_tsv.png](./screenshots/csv_to_tsv.png)
 
 ### CSV without headers
+
+```
+cat csvWithoutHeaders.csv | jsonni -q '$input[0]' --input=csv --input-header=id,isActive,age,name,registered
+```
 
 ![csv_without_headers.png](./screenshots/csv_without_headers.png)
 
