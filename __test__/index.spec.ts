@@ -111,6 +111,35 @@ describe('JSONNI', () => {
   });
 
   describe('query', () => {
+    describe('dot notation access', () => {
+      const file = 'json.json';
+
+      test.each([
+        ['$input.0._id', 1],
+        ['$input.0.hasOwnProperty("_id")', true],
+        [
+          '_.map($input.0, i => i)',
+          [1, false, 30, 'Meadows Parker', '2017-10-03T09:23:04 -03:00']
+        ],
+        [
+          '_.chain($input.0).map(i => i)',
+          [1, false, 30, 'Meadows Parker', '2017-10-03T09:23:04 -03:00']
+        ],
+        [
+          'from($input.0).map(i => i).toArray()',
+          [
+            ['_id', 1],
+            ['isActive', false],
+            ['age', 30],
+            ['name', 'Meadows Parker'],
+            ['registered', '2017-10-03T09:23:04 -03:00']
+          ]
+        ]
+      ])('%s', async (query: string, result: any) => {
+        expect(await getStdout(file, query)).toEqual(result);
+      });
+    });
+
     describe('arrays', () => {
       const file = 'array.json';
 

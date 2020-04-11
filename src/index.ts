@@ -10,7 +10,8 @@ import csv from 'csvtojson';
 import unescapeJs from 'unescape-js';
 import { parse } from 'json2csv';
 
-const logger = (message: string) => console.error(`\n${chalk.red(message)}\n`);
+const logger = (message: string): void =>
+  console.error(`\n${chalk.red(message)}\n`);
 const packageInfo = require('../package.json');
 
 const ALLOWED_FORMATS = ['csv', 'tsv', 'json'];
@@ -41,7 +42,7 @@ const isJSON = (input: string): boolean => {
  * @returns {object|null}
  */
 const parseQueryValueAndContext = (input: string, query: string): Query => {
-  const queryValue = _.trimEnd(query, ';');
+  const queryValue = _.trimEnd(query.replace(/\.(\d+)/g, '["$1"]'), ';');
 
   // ES6
   if (queryValue.startsWith('$input')) {
@@ -87,7 +88,11 @@ const parseQueryValueAndContext = (input: string, query: string): Query => {
  * @param {Query} query Query
  *
  */
-const evaluateQuery = (input: string, query: Query, indent: string = '  ') => {
+const evaluateQuery = (
+  input: string,
+  query: Query,
+  indent: string = '  '
+): string => {
   const { queryValue, context } = query;
 
   const unescapedIndent = unescapeJs(indent);
